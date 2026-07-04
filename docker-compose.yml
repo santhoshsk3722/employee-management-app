@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: employee-postgres
+
+    environment:
+      POSTGRES_DB: employeedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sandy@3722
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  employee-app:
+
+    build:
+      context: ./backend
+
+    container_name: employee-app
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - postgres
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/employeedb
+      DB_USERNAME: postgres
+      DB_PASSWORD: Sandy@3722
+
+volumes:
+  postgres-data:
