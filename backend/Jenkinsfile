@@ -16,13 +16,17 @@ pipeline {
 
         stage('Compile') {
             steps {
-                bat 'mvn clean compile'
+                dir('backend') {
+                    bat 'mvn clean compile'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn test'
+                dir('backend') {
+                    bat 'mvn test'
+                }
             }
         }
 
@@ -43,7 +47,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
         }
 
         success {
