@@ -41,7 +41,11 @@ pipeline {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('SonarQube') {
-                        bat "\"%SCANNER_HOME%\\bin\\sonar-scanner.bat\""
+                        bat '''
+                        mvn sonar:sonar ^
+                        -Dsonar.projectKey=employee-management ^
+                        -Dsonar.projectName="Employee Management"
+                        '''
                     }
                 }
             }
