@@ -7,6 +7,7 @@ pipeline {
     }
 
     environment {
+        SCANNER_HOME = tool 'SonarScanner'
         DB_URL = 'jdbc:postgresql://localhost:5433/employeedb'
         DB_USERNAME = 'postgres'
         DB_PASSWORD = 'Sandy@3722'
@@ -36,6 +37,24 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                dir('backend') {
+                    withSonarQubeEnv('SonarQube') {
+                        bat "\"%SCANNER_HOME%\\bin\\sonar-scanner.bat\""
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Package') {
             steps {
                 dir('backend') {
@@ -52,18 +71,11 @@ pipeline {
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
-        }
-
         success {
-            echo 'Build Successful!'
+            echo 'Pipeline Successful'
         }
-
         failure {
-            echo 'Build Failed!'
+            echo 'Pipeline Failed'
         }
     }
-
-    
 }
