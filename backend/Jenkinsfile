@@ -6,6 +6,12 @@ pipeline {
         maven 'Maven3'
     }
 
+    environment {
+        DB_URL = 'jdbc:postgresql://localhost:5433/employeedb'
+        DB_USERNAME = 'postgres'
+        DB_PASSWORD = 'Sandy@3722'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -58,4 +64,6 @@ pipeline {
             echo 'Build Failed!'
         }
     }
+
+    
 }
